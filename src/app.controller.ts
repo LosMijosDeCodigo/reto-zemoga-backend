@@ -7,6 +7,6 @@ export class AppController {
 
   @Get()
   getHello(): any {
-    throw new NotFoundException('sdfsdf');
+    return this.appService.getHello();
   }
 }
