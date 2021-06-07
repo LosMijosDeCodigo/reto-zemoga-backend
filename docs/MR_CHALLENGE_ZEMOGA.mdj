@@ -2070,9 +2070,9 @@
 							"_parent": {
 								"$ref": "AAAAAAF53XFWF+rk2Ms="
 							},
-							"name": "telefono",
+							"name": "phone",
 							"type": "varchar",
-							"length": "15"
+							"length": "20"
 						},
 						{
 							"_type": "ERDColumn",

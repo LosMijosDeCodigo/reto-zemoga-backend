@@ -8,7 +8,7 @@ import { UserModule } from './user/user.module';
 import databaseConfig from './config/database.config';
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: `.env` }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) =>

@@ -4,11 +4,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import fs = require('fs');
 import { ConfigService } from '@nestjs/config';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
   const port = config.get<number>('HTTP_PORT') || 4000;
+  //version
+  app.setGlobalPrefix('v1');
   //validations
   app.useGlobalPipes(
     new ValidationPipe({
@@ -25,10 +28,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('/swagger', app, document);
   //config info database in file ormconfig.json
-  fs.writeFileSync(
-    'ormconfig.json',
-    JSON.stringify(config.get('database.config'), null, 4),
-  );
+  const configOrm = config.get('database.config');
+  fs.writeFileSync('ormconfig.json', JSON.stringify(configOrm || {}, null, 4));
 
   //run app
   await app.listen(port);

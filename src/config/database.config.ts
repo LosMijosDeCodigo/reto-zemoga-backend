@@ -1,5 +1,4 @@
 import { registerAs } from '@nestjs/config';
-import { join } from 'path';
 const config = () => ({
   type: 'mysql',
   host: process.env.DATABASE_HOST,
@@ -7,19 +6,20 @@ const config = () => ({
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
-  entities: [join(__dirname, '../**/**/*entity{.ts,.js}')],
+  entities: ['dist/**/*.entity{.ts,.js}'],
   autoLoadEntities: true,
 
   //Migraciones
   migrationsRun: true,
-  migrations: [join(__dirname, '../migration/**/*{.ts,.js}')],
-  migrationsTableName: 'migrations_typeorm',
+  // migrations: [join(__dirname, '../migration/**/*{.ts,.js}')],
+  migrations: ['dist/migration/*{.ts,.js}'],
+  migrationsTableName: 'migrations',
   cli: {
-    migrationsDir: 'src/migration',
+    migrationsDir: 'src/migration/',
   },
 
   // 'synchronize' desactivar en produccion.
-  synchronize: false,
+  synchronize: true,
   logging: true,
   logger: 'file',
 });
