@@ -10,7 +10,7 @@ const config = () => ({
   autoLoadEntities: true,
 
   //Migraciones
-  migrationsRun: true,
+  migrationsRun: false,
   // migrations: [join(__dirname, '../migration/**/*{.ts,.js}')],
   migrations: ['dist/migration/*{.ts,.js}'],
   migrationsTableName: 'migrations',
@@ -19,7 +19,7 @@ const config = () => ({
   },
 
   // 'synchronize' desactivar en produccion.
-  synchronize: true,
+  synchronize: false,
   logging: true,
   logger: 'file',
 });

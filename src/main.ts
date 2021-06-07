@@ -10,6 +10,10 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
   const port = config.get<number>('HTTP_PORT') || 4000;
+  //cors
+  app.enableCors({
+    origin: '*',
+  });
   //version
   app.setGlobalPrefix('v1');
   //validations
@@ -26,7 +30,7 @@ async function bootstrap() {
     .setDescription('Documentacion de API generada por Nest Js')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('/swagger', app, document);
+  SwaggerModule.setup('/v1/swagger', app, document);
   //config info database in file ormconfig.json
   const configOrm = config.get('database.config');
   fs.writeFileSync('ormconfig.json', JSON.stringify(configOrm || {}, null, 4));
