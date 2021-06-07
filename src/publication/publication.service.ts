@@ -17,6 +17,16 @@ export class PublicationService {
     private readonly publicationTypeRepository: Repository<PublicationType>,
     private readonly userService: UserService,
   ) {}
+  async update(id: number, updatePublicationDto: UpdatePublicationDto) {
+    let newPublication = await this.publicationRepository.findOne({
+      where: { id, status: true },
+    });
+    if (!newPublication)
+      throw new NotFoundException('No existe la publicacion a editar');
+    newPublication = Object.assign(newPublication, updatePublicationDto);
+    return this.publicationRepository.save(newPublication);
+  }
+
   async create(createPublicationDto: CreatePublicationDto) {
     const { userId, publicationTypeId } = createPublicationDto;
     const user = await this.userService.findOne(userId);
@@ -25,17 +35,22 @@ export class PublicationService {
     );
     if (!user || !publicationType)
       throw new NotFoundException(
-        'Envias el userId o publicationTypeId de manera correcta.',
+        'El usuario o tipo de ublicacion es incorrecto.',
       );
     const newPublication =
       this.publicationRepository.create(createPublicationDto);
+    newPublication.user = user;
+    newPublication.publicationType = publicationType;
     const publication = await this.publicationRepository.save(newPublication);
+    delete newPublication.user;
+    delete newPublication.publicationType;
     return publication;
   }
 
   findAll(pagination: PaginationQueryDto): Promise<Publication[]> {
     const { limit, offset } = pagination;
     return this.publicationRepository.find({
+      where: { status: true },
       relations: ['user', 'images', 'publicationType'],
       take: limit,
       skip: offset,
@@ -48,7 +63,7 @@ export class PublicationService {
   ) {
     const { limit, offset } = pagination;
     const publicationType = await this.publicationTypeRepository.findOne({
-      name: nameTypePublication,
+      where: { status: true, name: nameTypePublication },
     });
     if (!publicationType)
       throw new NotFoundException(
@@ -64,18 +79,22 @@ export class PublicationService {
     return publications;
   }
 
-  findOne(id) {
-    return this.publicationRepository.findOne({
-      where: { id },
+  async findOne(id) {
+    const publication = await this.publicationRepository.findOne({
+      where: { id, status: true },
       relations: ['user', 'images', 'publicationType'],
     });
-  }
-  update(id: number, updatePublicationDto: UpdatePublicationDto) {
-    return `This action updates a #${id} publication`;
+    if (!publication)
+      throw new NotFoundException('No se encontró la publicacion');
+    delete publication.user.password;
+    return publication;
   }
 
   async remove(id: number) {
     const publication = await this.publicationRepository.findOne(id);
-    // publication.status = false;
+    if (!publication.status)
+      throw new NotFoundException('No se encontró la publicacion');
+    publication.status = false;
+    return this.publicationRepository.save(publication);
   }
 }

@@ -12,7 +12,7 @@ export class User extends AbstractEntity {
   phone: string = '';
   @Column()
   email: string;
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @BeforeInsert()

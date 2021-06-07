@@ -13,7 +13,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { API_KEY, FOLDER_UPLOADS, TIME_EXPIRE_TOKEN } from './config/constants';
 import { AuthService } from './auth/auth.service';
 import { PublicationModule } from './publication/publication.module';
-import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -39,15 +40,8 @@ import { MulterModule } from '@nestjs/platform-express';
       }),
       inject: [ConfigService],
     }),
-    // MulterModule.registerAsync({
-    //   imports: [ConfigModule],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     dest: configService.get(FOLDER_UPLOADS),
-    //   }),
-    //   inject: [ConfigService],
-    // }),
-    MulterModule.register({
-      dest: './publication-imagess',
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     AuthModule,
     UserModule,

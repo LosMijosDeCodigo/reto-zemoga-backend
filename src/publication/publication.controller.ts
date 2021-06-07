@@ -10,17 +10,21 @@ import {
   NotFoundException,
   BadGatewayException,
   UseInterceptors,
-  UploadedFile,
   BadRequestException,
   UploadedFiles,
+  Put,
 } from '@nestjs/common';
 import { PublicationService } from './publication.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentService } from './services/comment.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImageService } from './services/image.service';
+import { ConfigService } from '@nestjs/config';
+import { FOLDER_UPLOADS } from 'src/config/constants';
+import { UpdatePublicationDto } from './dto/update-publication.dto';
+import { ReplyService } from './services/reply.service';
 
 @Controller('publications')
 export class PublicationController {
@@ -28,6 +32,8 @@ export class PublicationController {
     private readonly publicationService: PublicationService,
     private readonly commentService: CommentService,
     private readonly imageService: ImageService,
+    private readonly replyService: ReplyService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post()
@@ -39,15 +45,6 @@ export class PublicationController {
   findAll(@Query() pagination: PaginationQueryDto) {
     return this.publicationService.findAll(pagination);
   }
-
-  @Get(':typePublication')
-  findFilter(
-    @Query() pagination: PaginationQueryDto,
-    @Param('typePublication') typePublication: string,
-  ) {
-    return this.publicationService.findFilter(pagination, typePublication);
-  }
-
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     const publication = this.publicationService.findOne(id);
@@ -55,10 +52,24 @@ export class PublicationController {
       throw new NotFoundException('No se encontro la publicacion');
     return publication;
   }
+  @Put(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePublicaionDtio: UpdatePublicationDto,
+  ) {
+    return this.publicationService.update(id, updatePublicaionDtio);
+  }
+  @Get()
+  findFilter(
+    @Query('filter') publicationType: string,
+    @Query() pagination: PaginationQueryDto,
+  ) {
+    return this.publicationService.findFilter(pagination, publicationType);
+  }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.publicationService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.publicationService.remove(id);
   }
 
   //comments
@@ -71,6 +82,12 @@ export class PublicationController {
     if (!comment) throw new BadGatewayException('Error al crear el recurso');
     return comment;
   }
+
+  @Delete('comments/:id')
+  deleteComment(@Param('id', ParseIntPipe) id: number) {
+    return this.commentService.remove(id);
+  }
+
   @Get(':id/comments')
   findAllCommnents(
     @Param('id', ParseIntPipe) id: number,
@@ -81,19 +98,43 @@ export class PublicationController {
   //images
 
   @Post(':id/images')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('image'))
   async uploadImage(
-    @UploadedFile() files: Express.Multer.File,
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    console.log(files);
-    // try {
-    //   const filesSaved = files.map(({ filename }) => {
-    //     return this.imageService.create(id, filename);
-    //   });
-    //   return await Promise.all(filesSaved);
-    // } catch (error) {
-    //   throw new BadRequestException('Error al almacenar los archivos');
-    // }
+    const filesSaved = files.map((file) => {
+      return this.imageService.create(
+        id,
+        `${this.configService.get(FOLDER_UPLOADS)}/${file.filename}`,
+      );
+    });
+    if (filesSaved.length == 0)
+      throw new BadRequestException('No has enviado imagenes');
+    return await Promise.all(filesSaved);
+  }
+
+  //replies
+  @Post('comments/:id/replies')
+  createReply(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    const reply = this.replyService.create(id, createCommentDto);
+    if (!reply) throw new BadGatewayException('Error al crear la replica');
+    return reply;
+  }
+
+  @Get('comments/:id/replies')
+  findAllReply(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() paginate: PaginationQueryDto,
+  ) {
+    return this.replyService.findAll(id, paginate);
+  }
+
+  @Delete('comments/replies/:id')
+  deleteReply(@Param('id', ParseIntPipe) id: number) {
+    return this.replyService.remove(id);
   }
 }

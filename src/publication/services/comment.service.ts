@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQueryDto } from 'src/common/dtos/pagination-query.dto';
 import { Repository } from 'typeorm';
@@ -17,9 +21,11 @@ export class CommentService {
     const publication = await this.publicationService.findOne(publicationId);
     if (!publication)
       throw new NotFoundException('La publicacion asociada no existe');
-    const comment = this.commentRepository.create(createCommnetDto);
-    comment.publication = publication;
-    return this.commentRepository.save(comment);
+    const newComment = this.commentRepository.create(createCommnetDto);
+    newComment.publication = publication;
+    const comment = await this.commentRepository.save(newComment);
+    delete comment.publication;
+    return comment;
   }
 
   findAll(publicationId: number, paginate: PaginationQueryDto) {
@@ -41,6 +47,8 @@ export class CommentService {
 
   async remove(id: number) {
     const comment = await this.commentRepository.findOne(id);
+    if (!comment)
+      throw new BadGatewayException('No se encontro el comentario a eliminar');
     return this.commentRepository.remove(comment);
   }
 }

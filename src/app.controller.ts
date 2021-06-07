@@ -1,29 +1,36 @@
 import {
   Controller,
   Get,
+  Header,
   NotFoundException,
-  Post,
-  UploadedFile,
-  UseInterceptors,
+  Param,
+  Res,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { createReadStream, exists, existsSync, readFileSync } from 'fs';
+import { join } from 'path';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
+  private UBICATGES = '';
   constructor(private readonly appService: AppService) {}
 
   @Get()
   getHello(): any {
     return this.appService.getHello();
   }
-  @Post()
-  @UseInterceptors(FileInterceptor('image'))
-  async uploadedFile(@UploadedFile() file) {
-    const response = {
-      originalname: file.originalname,
-      filename: file.filename,
-    };
-    return response;
-  }
+  // @Get('public/publication-images/:nameImage')
+  // @Header('Content-type', 'image/jpeg')
+  // getImage(@Param('nameImage') nameImage: string) {
+  //   const pathImage = join(
+  //     __dirname,
+  //     '..',
+  //     'public/publication-images',
+  //     nameImage,
+  //   );
+  //   if (!existsSync(pathImage))
+  //     throw new NotFoundException('No se encontro la imagen');
+  //   const file = readFileSync(pathImage);
+  //   return file;
+  // }
 }

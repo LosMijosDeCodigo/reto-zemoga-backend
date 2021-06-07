@@ -24,9 +24,11 @@ export class ImageService {
     const publication = await this.publicationService.findOne(publicationId);
     if (!publication)
       throw new NotFoundException('La publicacion asociada no existe');
-    const image = this.imageRepository.create({ url: urlImage });
-    image.publication = publication;
-    return this.imageRepository.save(image);
+    const newImage = this.imageRepository.create({ url: urlImage });
+    newImage.publication = publication;
+    const image = await this.imageRepository.save(newImage);
+    const { publication: p, ...rest } = image;
+    return rest;
   }
 
   uploadFile(url) {

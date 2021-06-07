@@ -24,7 +24,7 @@ export class Publication extends AbstractEntity {
   description: string;
 
   @Column({ type: 'boolean', default: true })
-  status: string;
+  status: boolean;
 
   @JoinColumn()
   @ManyToOne((_) => User, (user) => user.publications)
