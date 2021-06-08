@@ -1,7 +1,6 @@
-import { IsString, IsUrl } from 'class-validator';
+import { IsArray, IsString, IsUrl } from 'class-validator';
 
 export class ValidateUrl {
-  @IsString()
-  @IsUrl()
-  url: string;
+  @IsUrl({}, { each: true })
+  urls: string[];
 }

@@ -25,6 +25,7 @@ import { ConfigService } from '@nestjs/config';
 import { FOLDER_UPLOADS } from 'src/config/constants';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 import { ReplyService } from './services/reply.service';
+import { ValidateUrl } from 'src/common/dtos/validate-url.dto';
 
 @Controller('publications')
 export class PublicationController {
@@ -98,16 +99,14 @@ export class PublicationController {
   //images
 
   @Post(':id/images')
-  @UseInterceptors(FilesInterceptor('image'))
+  // @UseInterceptors(FilesInterceptor('image'))
   async uploadImage(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    // @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() dto: ValidateUrl,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    const filesSaved = files.map((file) => {
-      return this.imageService.create(
-        id,
-        `${this.configService.get(FOLDER_UPLOADS)}/${file.filename}`,
-      );
+    const filesSaved = dto.urls.map((fileUrl) => {
+      return this.imageService.create(id, fileUrl);
     });
     if (filesSaved.length == 0)
       throw new BadRequestException('No has enviado imagenes');
