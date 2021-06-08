@@ -7,6 +7,6 @@ export class Image extends AbstractEntity {
   @JoinColumn()
   @ManyToOne((_) => Publication, (publication) => publication.images)
   publication: Publication;
-  @Column()
-  url: string;
+  @Column({ type: 'longtext' })
+  base64: string;
 }

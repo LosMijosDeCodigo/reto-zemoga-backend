@@ -26,6 +26,7 @@ import { FOLDER_UPLOADS } from 'src/config/constants';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 import { ReplyService } from './services/reply.service';
 import { ValidateUrl } from 'src/common/dtos/validate-url.dto';
+import { CreateImage } from './dto/create-image.dto';
 
 @Controller('publications')
 export class PublicationController {
@@ -102,11 +103,11 @@ export class PublicationController {
   // @UseInterceptors(FilesInterceptor('image'))
   async uploadImage(
     // @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() dto: ValidateUrl,
+    @Body() dto: CreateImage,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    const filesSaved = dto.urls.map((fileUrl) => {
-      return this.imageService.create(id, fileUrl);
+    const filesSaved = dto.images.map((base64) => {
+      return this.imageService.create(id, base64);
     });
     if (filesSaved.length == 0)
       throw new BadRequestException('No has enviado imagenes');
