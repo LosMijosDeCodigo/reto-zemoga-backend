@@ -1,4 +1,10 @@
-import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  Logger,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -58,8 +64,24 @@ import { UserController } from './user/user.controller';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthotizationMiddleware)
-      .forRoutes(PublicationController, UserController);
+    consumer.apply(AuthotizationMiddleware).forRoutes(
+      { path: 'publications', method: RequestMethod.POST },
+      { path: 'publications/:id', method: RequestMethod.PUT },
+      { path: 'publications/:id', method: RequestMethod.DELETE },
+      { path: 'publications/:id/comments', method: RequestMethod.POST },
+      { path: 'publications/comments/:id', method: RequestMethod.DELETE },
+      {
+        path: 'publications/comments/:id/replies',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'publications/comments/replies/:id',
+        method: RequestMethod.DELETE,
+      },
+      {
+        path: 'publications/:id/images',
+        method: RequestMethod.POST,
+      },
+    );
   }
 }
