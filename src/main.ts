@@ -36,7 +36,7 @@ async function bootstrap() {
   fs.writeFileSync('ormconfig.json', JSON.stringify(configOrm || {}, null, 4));
 
   //run app
-  await app.listen(port);
+  await app.listen(process.env.PORT || port);
   logger.log(`INICIA LA APP IN PORT ${port}`);
 }
 bootstrap();
