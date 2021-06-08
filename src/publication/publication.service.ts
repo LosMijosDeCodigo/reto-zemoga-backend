@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
 import { Publication } from './entities/publication.entity';
-import { PublicationType } from './entities/PublicationType.entity';
+import { PublicationType } from './entities/publicationType.entity';
 
 @Injectable()
 export class PublicationService {

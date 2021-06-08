@@ -3,7 +3,7 @@ import { PublicationService } from './publication.service';
 import { PublicationController } from './publication.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Publication } from './entities/publication.entity';
-import { PublicationType } from './entities/PublicationType.entity';
+import { PublicationType } from './entities/publicationType.entity';
 import { UserModule } from 'src/user/user.module';
 import { CommentService } from './services/comment.service';
 import { ImageService } from './services/image.service';
