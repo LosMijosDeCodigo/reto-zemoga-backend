@@ -12,9 +12,12 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.userService.findOneByEmail(email);
     if (user && (await compare(password, user.password))) {
-      const { password, id, phone, email, fullName, createdAt } = user;
-      const token = this.jwtService.sign({ id, fullName });
-      return { token, id, phone, email, fullName, createdAt };
+      const token = this.jwtService.sign({
+        id: user.id,
+        fullName: user.fullName,
+      });
+      delete user.password;
+      return { token, data: user };
     }
     return null;
   }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -15,10 +15,14 @@ import { AuthService } from './auth/auth.service';
 import { PublicationModule } from './publication/publication.module';
 import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
 import { join } from 'path';
+import { AuthotizationMiddleware } from './common/middleware/authotization.middleware';
+import { PublicationController } from './publication/publication.controller';
+import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
     PassportModule,
+    Logger,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -50,6 +54,12 @@ import { join } from 'path';
     PublicationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService],
+  providers: [AppService, AuthService, Logger],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthotizationMiddleware)
+      .forRoutes(PublicationController, UserController);
+  }
+}

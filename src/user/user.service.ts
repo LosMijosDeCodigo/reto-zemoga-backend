@@ -33,7 +33,10 @@ export class UserService {
     });
   }
   findOneByEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({ email });
+    return this.userRepository.findOne({
+      select: ['id', 'phone', 'fullName', 'email', 'password'],
+      where: { email },
+    });
   }
   findOne(id: number) {
     return this.userRepository.findOne(id);

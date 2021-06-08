@@ -12,9 +12,6 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { API_KEY } from 'src/config/constants';
 
 @Controller('auth')
 export class AuthController {
