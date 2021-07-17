@@ -4,7 +4,15 @@ import { User } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Comment } from './comment.entity';
 import { Image } from './image.entity';
-import { PublicationType } from './publicationType.entity';
+// import { PublicationType } from './publicationType.entity';
+
+@Entity('publication_type')
+export class PublicationType extends AbstractEntity {
+  @Column()
+  name: string;
+  @OneToMany((_) => Publication, (publication) => publication.publicationType)
+  publications: Publication[];
+}
 
 @Entity('publications')
 export class Publication extends AbstractEntity {

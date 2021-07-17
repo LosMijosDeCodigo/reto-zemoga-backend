@@ -4,14 +4,16 @@ import { hash } from 'bcryptjs';
 import { Publication } from 'src/publication/entities/publication.entity';
 import { Invoice } from 'src/invoice/entities/invoice.entity';
 import { Message } from 'src/message/entities/message.entity';
+import { Exclude } from 'class-transformer';
 @Entity('users')
 export class User extends AbstractEntity {
   @Column()
   fullName: string;
   @Column()
-  phone: string = '';
+  phone = '';
   @Column()
   email: string;
+
   @Column({ select: false })
   password: string;
 

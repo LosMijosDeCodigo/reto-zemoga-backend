@@ -16,14 +16,13 @@ import { InvoiceModule } from './invoice/invoice.module';
 import databaseConfig from './config/database.config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { API_KEY, FOLDER_UPLOADS, TIME_EXPIRE_TOKEN } from './config/constants';
-import { AuthService } from './auth/auth.service';
+import { API_KEY, TIME_EXPIRE_TOKEN } from './config/constants';
+import { AuthService } from './auth-old/auth.service';
 import { PublicationModule } from './publication/publication.module';
 import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
 import { join } from 'path';
 import { AuthotizationMiddleware } from './common/middleware/authotization.middleware';
-import { PublicationController } from './publication/publication.controller';
-import { UserController } from './user/user.controller';
+import appConfig from './config/app.config';
 
 @Module({
   imports: [
@@ -37,7 +36,7 @@ import { UserController } from './user/user.controller';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig],
+      load: [appConfig],
       envFilePath: '.env',
     }),
     JwtModule.registerAsync({
@@ -62,26 +61,27 @@ import { UserController } from './user/user.controller';
   controllers: [AppController],
   providers: [AppService, AuthService, Logger],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthotizationMiddleware).forRoutes(
-      { path: 'publications', method: RequestMethod.POST },
-      { path: 'publications/:id', method: RequestMethod.PUT },
-      { path: 'publications/:id', method: RequestMethod.DELETE },
-      { path: 'publications/:id/comments', method: RequestMethod.POST },
-      { path: 'publications/comments/:id', method: RequestMethod.DELETE },
-      {
-        path: 'publications/comments/:id/replies',
-        method: RequestMethod.POST,
-      },
-      {
-        path: 'publications/comments/replies/:id',
-        method: RequestMethod.DELETE,
-      },
-      {
-        path: 'publications/:id/images',
-        method: RequestMethod.POST,
-      },
-    );
-  }
+export class AppModule {
+  // export class AppModule implements NestModule {
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(AuthotizationMiddleware).forRoutes(
+  //     { path: 'publications', method: RequestMethod.POST },
+  //     { path: 'publications/:id', method: RequestMethod.PUT },
+  //     { path: 'publications/:id', method: RequestMethod.DELETE },
+  //     { path: 'publications/:id/comments', method: RequestMethod.POST },
+  //     { path: 'publications/comments/:id', method: RequestMethod.DELETE },
+  //     {
+  //       path: 'publications/comments/:id/replies',
+  //       method: RequestMethod.POST,
+  //     },
+  //     {
+  //       path: 'publications/comments/replies/:id',
+  //       method: RequestMethod.DELETE,
+  //     },
+  //     {
+  //       path: 'publications/:id/images',
+  //       method: RequestMethod.POST,
+  //     },
+  //   );
+  // }
 }

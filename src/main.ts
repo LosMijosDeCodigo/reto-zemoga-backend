@@ -11,6 +11,7 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
   const port = config.get<number>('HTTP_PORT') || 4000;
+
   //cors
   app.enableCors({
     origin: '*',
@@ -34,11 +35,12 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('/v1/swagger', app, document);
-  //config info database in file ormconfig.json
+  // config info database in file ormconfig.json
   const configOrm = config.get('database.config');
   fs.writeFileSync('ormconfig.json', JSON.stringify(configOrm || {}, null, 4));
 
   //run app
+  // const port = 4000;
   await app.listen(process.env.PORT || port);
   logger.log(`INICIA LA APP IN PORT ${port}`);
 }
