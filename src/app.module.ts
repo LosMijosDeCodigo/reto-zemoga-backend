@@ -17,7 +17,11 @@ import databaseConfig from './config/database.config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { API_KEY, TIME_EXPIRE_TOKEN } from './config/constants';
+<<<<<<< HEAD
 import { AuthService } from './auth-old/auth.service';
+=======
+import { AuthService } from './auth/auth.service';
+>>>>>>> master
 import { PublicationModule } from './publication/publication.module';
 import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
 import { join } from 'path';

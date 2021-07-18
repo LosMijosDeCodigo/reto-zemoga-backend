@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Module } from '@nestjs/common';
+import { BadRequestException, Module } from '@nestjs/common';
 import { PublicationService } from './publication.service';
 import { PublicationController } from './publication.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -31,7 +31,7 @@ import { extname } from 'path';
           }
           return cb(
             new BadRequestException(
-              `El archivo de extencion ${file.mimetype} no es permitido.`,
+              `El archivo de extension ${file.mimetype} no es permitido.`,
             ),
             false,
           );
@@ -40,16 +40,15 @@ import { extname } from 'path';
           destination: (res, file, cb) =>
             cb(null, configService.get(FOLDER_UPLOADS)),
           filename: (req, file, cb) => {
-            let filename = `${uuid()}${extname(file.originalname)}`;
-            cb(null, filename);
+            cb(null, `${uuid()}${extname(file.originalname)}`);
           },
         }),
       }),
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([
-      Publication,
       PublicationType,
+      Publication,
       Comment,
       Image,
       Reply,
