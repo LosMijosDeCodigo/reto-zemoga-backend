@@ -16,14 +16,12 @@ import { InvoiceModule } from './invoice/invoice.module';
 import databaseConfig from './config/database.config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { API_KEY, FOLDER_UPLOADS, TIME_EXPIRE_TOKEN } from './config/constants';
+import { API_KEY, TIME_EXPIRE_TOKEN } from './config/constants';
 import { AuthService } from './auth/auth.service';
 import { PublicationModule } from './publication/publication.module';
 import { ServeStaticModule } from '@nestjs/serve-static/dist/serve-static.module';
 import { join } from 'path';
 import { AuthotizationMiddleware } from './common/middleware/authotization.middleware';
-import { PublicationController } from './publication/publication.controller';
-import { UserController } from './user/user.controller';
 
 @Module({
   imports: [

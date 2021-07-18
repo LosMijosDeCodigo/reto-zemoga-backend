@@ -1,4 +1,4 @@
-import { IsDecimal, IsIn, IsInt, IsPositive, IsString } from 'class-validator';
+import { IsDecimal, IsInt, IsPositive, IsString } from 'class-validator';
 
 export class CreatePublicationDto {
   @IsInt()

@@ -35,3 +35,4 @@ lerna-debug.log*
 
 .env
 ormconfig.json
+package-lock.json
