@@ -10,9 +10,12 @@ export class User extends AbstractEntity {
   @Column()
   fullName: string;
   @Column()
-  phone = '';
+  phone: string;
   @Column()
   email: string;
+
+  @Column()
+  role: string;
 
   @Column({ select: false })
   password: string;
