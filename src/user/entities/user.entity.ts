@@ -9,7 +9,7 @@ import { Exclude } from 'class-transformer';
 export class User extends AbstractEntity {
   @Column()
   fullName: string;
-  @Column()
+  @Column({ default: '' })
   phone: string;
   @Column()
   email: string;

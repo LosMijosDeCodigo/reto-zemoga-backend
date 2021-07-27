@@ -17,7 +17,7 @@ export class ApiKeyGuard implements CanActivate {
     private readonly reflector: Reflector,
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
   ) {
-    console.log(this.configService.apiKey);
+    console.log(this.configService.apiKey + ' desde el api-key-guard');
   }
   canActivate(
     context: ExecutionContext,
@@ -28,7 +28,7 @@ export class ApiKeyGuard implements CanActivate {
 
     if (this.reflector.get(IS_PUBLIC_KEY, context.getHandler())) return true;
     if (authorization && typeof authorization === 'string') {
-      if (!authorization.toLowerCase().includes('bearer')) {
+      if (!authorization.toLowerCase()?.includes('bearer')) {
         throw new UnauthorizedException('Mal header');
       }
       if (this.configService.apiKey === authorization.split(' ')[1])

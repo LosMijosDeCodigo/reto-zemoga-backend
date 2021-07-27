@@ -4,9 +4,11 @@ import { UserModule } from 'src/user/user.module';
 import { AuthService } from './services/auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthController } from './controllers/auth.controller';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { API_KEY, TIME_EXPIRE_TOKEN } from 'src/config/constants';
+import appConfig from 'src/config/app.config';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -15,16 +17,18 @@ import { API_KEY, TIME_EXPIRE_TOKEN } from 'src/config/constants';
     UserModule,
     JwtModule.registerAsync({
       imports: [ConfigModule], // Missing this
-      useFactory: (config: ConfigService) => ({
-        signOptions: {
-          expiresIn: config.get(TIME_EXPIRE_TOKEN) + 's',
-        },
-        secretOrPrivateKey: config.get(API_KEY),
-      }),
-      inject: [ConfigService],
+      inject: [appConfig.KEY],
+      useFactory: (configService: ConfigType<typeof appConfig>) => {
+        return {
+          signOptions: {
+            expiresIn: configService.jwtExpireIn + 's',
+          },
+          secretOrPrivateKey: configService.jwtSecret,
+        };
+      },
     }),
   ],
-  providers: [AuthService, LocalStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

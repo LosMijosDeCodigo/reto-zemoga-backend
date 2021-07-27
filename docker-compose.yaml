@@ -1,16 +1,15 @@
-version: "3.5"
+version: '3.5'
 services:
-    mysql:
-        image: mysql
-        ports:
-            - 3306:3306
-        environment:
-            MYSQL_ROOT_PASSWORD: 12345
-            MYSQL_USER: root
-            MYSQL_PASSWORD: 12345
-            MYSQL_DATABASE: course_platzi
-        volumes:
-            - .docker/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-            - db_data:/var/lib/mysql
-volumes:
-    db_data:
+  mysqdb:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - '3306:3307'
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 12345
+      MYSQL_DATABASE: course_platzi
+    volumes:
+      - '.mysql/bin:/var/lib/mysql'

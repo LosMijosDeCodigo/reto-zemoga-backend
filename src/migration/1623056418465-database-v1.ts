@@ -10,6 +10,10 @@ export class databaseV11623056418465 implements MigrationInterface {
     await queryRunner.query(
       'CREATE TABLE `users` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), `fullName` varchar(255) NOT NULL, `phone` varchar(255) NOT NULL, `email` varchar(255) NOT NULL, `password` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB',
     );
+
+    await queryRunner.query(
+      'ALTER TABLE `users` ADD `role` varchar(255) NOT NULL',
+    );
     await queryRunner.query(
       'CREATE TABLE `replies` (`id` int NOT NULL AUTO_INCREMENT, `createdAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updatedAt` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), `userId` int NOT NULL, `comment` text NOT NULL, `commentId` int NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB',
     );
